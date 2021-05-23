@@ -1,0 +1,264 @@
+{
+    "name" : "gvm",
+    "author" : " 0xSecEng & z1p",
+    "version" : 1.0,
+    "categories" : ["vulnerability management"],
+    "description" : "GVM plugins enables jimi to contact openVas vulnerability management server over a TCP socket via SSH. jimi is able to configure, run and return vulnerability reports from openVas.",
+    "icon" : null,
+    "requirements" : {
+        "jimi_min_version" : null,
+        "jimi_max_version" : null,
+        "plugins" : []
+    },
+    "collections" : {
+        "gvmScan" : {
+            "display_name" : "gvmScan",
+            "className" : "_gvmScan",
+            "class_location" : "models.gvmScan",
+            "description" : "Collection that holds scans and report data.",
+            "fields" : [
+                { "schema_item" : "scannerId", "schema_value" : "scannerId", "type" : "input", "label" : "scannerId", "description" : "The openVas scannerId." },
+                { "schema_item" : "conductId", "schema_value" : "conductId", "type" : "input", "label" : "conductId", "description" : "ConductId from where the scan was requested." },
+                { "schema_item" : "flowId", "schema_value" : "flowId", "type" : "input", "label" : "flowId", "description" : "FlowId of the object used to request the scan." },
+                { "schema_item" : "target", "schema_value" : "target", "type" : "input", "label" : "target", "description" : "Target i.e. 127.0.0.1 for the scan." },
+                { "schema_item" : "targetId", "schema_value" : "targetId", "type" : "input", "label" : "targetId", "description" : "Automatically defined field once a scan is started to reference the target." },
+                { "schema_item" : "configId", "schema_value" : "configId", "type" : "input", "label" : "configId", "description" : "Scan configId used when scanning." },
+                { "schema_item" : "portListId", "schema_value" : "portListId", "type" : "input", "label" : "portListId", "description" : "Id of the port list used when scanning." },
+                { "schema_item" : "scanId", "schema_value" : "scanId", "type" : "input", "label" : "scanId", "description" : "Automatically defined field once a scan is started to reference the scan." },
+                { "schema_item" : "reportId", "schema_value" : "reportId", "type" : "input", "label" : "reportId", "description" : "Automatically defined field once a scan is finished to reference the report." },
+                { "schema_item" : "status", "schema_value" : "status", "type" : "input", "label" : "status", "description" : "Current status of the scan." },
+                { "schema_item" : "findings", "schema_value" : "findings", "type" : "json-input", "label" : "findings", "description" : "Json finding and result data." },
+                { "schema_item" : "requestTime", "schema_value" : "requestTime", "type" : "input", "label" : "requestTime", "description" : "Epoch time that the scan was requested." },
+                { "schema_item" : "startTime", "schema_value" : "startTime", "type" : "input", "label" : "startTime", "description" : "Epoch time when the scan started." },
+                { "schema_item" : "endTime", "schema_value" : "endTime", "type" : "input", "label" : "endTime", "description" : "Epoch time when the scan finished." },
+                { "schema_item" : "lastCheck", "schema_value" : "lastCheck", "type" : "input", "label" : "lastCheck", "description" : "Epoch time of the last check made to a running scan. This is used so that long running scans can timeout after a defined time." },
+                { "schema_item" : "data", "schema_value" : "data", "type" : "json-input", "label" : "data", "description" : "Current flow data at the time the scan was requested." }
+            ],
+            "data_out" : {
+
+            }
+        }
+    },
+    "triggers" : {
+        
+    },
+    "actions" : {
+        "gvmConnect" : {
+            "display_name" : "gvmConnect",
+            "className" : "_gvmConnect",
+            "class_location" : "models.action",
+            "description" : "Connects over SSH to a openVas scanner.",
+            "fields" : [
+                { "schema_item" : "host", "schema_value" : "host", "type" : "input", "label" : "host", "description" : "IP or Hostname of the SSH server used to communicate with the openVas manager.", "required" : true, "jimi_syntax" : true },
+                { "schema_item" : "port", "schema_value" : "port", "type" : "input", "label" : "port", "description" : "SSH port.", "required" : true, "jimi_syntax" : false },
+                { "schema_item" : "username", "schema_value" : "username", "type" : "input", "label" : "username", "description" : "SSH username.", "required" : true, "jimi_syntax" : true },
+                { "schema_item" : "password", "schema_value" : "password", "type" : "input", "label" : "password", "description" : "SSH password or SSH private key password when a keyFile is defined.", "required" : true, "jimi_syntax" : false },
+                { "schema_item" : "keyFile", "schema_value" : "keyFile", "type" : "input", "label" : "keyFile", "description" : "Path to the SSH private key to be used to connect.", "required" : false, "jimi_syntax" : true },
+                { "schema_item" : "openvasUsername", "schema_value" : "openvasUsername", "type" : "input", "label" : "openvasUsername", "description" : "openVas username.", "required" : true, "jimi_syntax" : true },
+                { "schema_item" : "openvasPassword", "schema_value" : "openvasPassword", "type" : "input", "label" : "openvasPassword", "description" : "openVas password.", "required" : true, "jimi_syntax" : false },
+                { "schema_item" : "openvasPort", "schema_value" : "openvasPort", "type" : "input", "label" : "openvasPort", "description" : "oepnVas manager TCP port.", "required" : true, "jimi_syntax" : false }
+            ],
+            "data_out" : {
+                "result" : { 
+                    "description" : "Returns True when a connection is made and authentication to openVas is successful.",
+                    "type" : "boolean",
+                    "always_present" : true,
+                    "values" : {
+                        "True" : { "description" : "Connected." },
+                        "False" : { "description" : "Unable to connect." }
+                    }
+                },
+                "rc" : {
+                    "description" : "Returns the exit code for the action.",
+                    "type" : "number",
+                    "always_present" : true,
+                    "values" : {
+                        "0" : { "description" : "Connected." },
+                        "403" : { "description" : "Unable to connect." }
+                    }
+                },
+                "msg" : {
+                    "description" : "A message that outlines additional information about the result.",
+                    "type" : "text",
+                    "always_present" : true,
+                    "values" : {
+                    }
+                }
+            }
+        },
+        "gvmDisconnect" : {
+            "display_name" : "gvmDisconnect",
+            "className" : "_gvmDisconnect",
+            "class_location" : "models.action",
+            "description" : "Disconnects a connected openVas connection.",
+            "fields" : [
+                
+            ],
+            "data_out" : {
+                "result" : { 
+                    "description" : "Returns True when a connection is disconnected.",
+                    "type" : "boolean",
+                    "always_present" : true,
+                    "values" : {
+                        "True" : { "description" : "Disconnected." },
+                        "False" : { "description" : "openvasClient object not found." }
+                    }
+                },
+                "rc" : {
+                    "description" : "Returns the exit code for the action.",
+                    "type" : "number",
+                    "always_present" : true,
+                    "values" : {
+                        "0" : { "description" : "Disconnected." },
+                        "404" : { "description" : "openvasClient object not found." }
+                    }
+                },
+                "msg" : {
+                    "description" : "A message that outlines additional information about the result.",
+                    "type" : "text",
+                    "always_present" : true,
+                    "values" : {
+                    }
+                }
+            }
+        },
+        "gvmNewScan" : {
+            "display_name" : "gvmNewScan",
+            "className" : "_gvmNewScan",
+            "class_location" : "models.action",
+            "description" : "Request a new scan is completed for a given target address.",
+            "fields" : [
+                { "schema_item" : "scannerId", "schema_value" : "scannerId", "type" : "input", "label" : "scannerId", "description" : "openVas scannerId that will be used to carry out the scan.", "required" : true, "jimi_syntax" : true },
+                { "schema_item" : "target", "schema_value" : "target", "type" : "input", "label" : "target", "description" : "A target to scan i.e. 127.0.0.1.", "required" : true, "jimi_syntax" : true },
+                { "schema_item" : "configId", "schema_value" : "configId", "type" : "input", "label" : "configId", "description" : "openVas configId for the scan to carry out.", "required" : true, "jimi_syntax" : true },
+                { "schema_item" : "portListId", "schema_value" : "portListId", "type" : "input", "label" : "portListId", "description" : "openVas portListId used when scanning the target.", "required" : true, "jimi_syntax" : true }
+            ],
+            "data_out" : {
+                "result" : { 
+                    "description" : "Returns True when a scan request is successful.",
+                    "type" : "boolean",
+                    "always_present" : true,
+                    "values" : {
+                        "True" : { "description" : "New scan created." },
+                        "False" : { "description" : "Existing scan for given target still outstanding." }
+                    }
+                },
+                "rc" : {
+                    "description" : "Returns the exit code for the action.",
+                    "type" : "number",
+                    "always_present" : true,
+                    "values" : {
+                        "0" : { "description" : "New scan created." },
+                        "200" : { "description" : "Scan completed." },
+                        "1" : { "description" : "Existing scan for given target still outstanding." }
+                    }
+                },
+                "reportData" : {
+                    "description" : "When exit code is 200 json report finding data is also passed onto the next object.",
+                    "type" : "json",
+                    "always_present" : false,
+                    "values" : {
+                    }
+                },
+                "scan_id" : {
+                    "description" : "The newly created scan_id, only present when a scan is created successfully.",
+                    "type" : "text",
+                    "always_present" : false,
+                    "values" : {
+                    }
+                },
+                "msg" : {
+                    "description" : "A message that outlines additional information about the result.",
+                    "type" : "text",
+                    "always_present" : true,
+                    "values" : {
+                    }
+                }
+            }
+        },
+        "gvmGetScan" : {
+            "display_name" : "gvmGetScan",
+            "className" : "_gvmGetScan",
+            "class_location" : "models.action",
+            "description" : "Get the result of a scan by scanId.",
+            "fields" : [
+                { "schema_item" : "scanId", "schema_value" : "scanId", "type" : "input", "label" : "scanId", "description" : "scanId to return the results of.", "required" : true, "jimi_syntax" : true }
+            ],
+            "data_out" : {
+                "result" : { 
+                    "description" : "Returns True when a scan is retrieved.",
+                    "type" : "boolean",
+                    "always_present" : true,
+                    "values" : {
+                        "True" : { "description" : "Scan data retrieved." },
+                        "False" : { "description" : "Scan data could not be retrieved." }
+                    }
+                },
+                "rc" : {
+                    "description" : "Returns the exit code for the action.",
+                    "type" : "number",
+                    "always_present" : true,
+                    "values" : {
+                        "0" : { "description" : "Scan data retrieved." },
+                        "404" : { "description" : "Scan data could not be retrieved." }
+                    }
+                },
+                "scan" : {
+                    "description" : "Json data containing the scan and its data.",
+                    "type" : "json",
+                    "always_present" : false,
+                    "values" : {
+                    }
+                },
+                "msg" : {
+                    "description" : "A message that outlines additional information about the result.",
+                    "type" : "text",
+                    "always_present" : true,
+                    "values" : {
+                    }
+                }
+            }
+        },
+        "gvmProcessScans" : {
+            "display_name" : "gvmProcessScans",
+            "className" : "_gvmProcessScans",
+            "class_location" : "models.action",
+            "description" : "jimi openVas controller responsible for running and retrieving results from the openVas server.",
+            "fields" : [
+                { "schema_item" : "scannerId", "schema_value" : "scannerId", "type" : "input", "label" : "scannerId", "description" : "openVas scannerId for which scans will be processed.", "required" : true, "jimi_syntax" : true },
+                { "schema_item" : "scanTimeout", "schema_value" : "scanTimeout", "type" : "input", "label" : "scanTimeout", "description" : "Maximum time a scan can be running for before jimi attempts to stop it.", "required" : true, "jimi_syntax" : false },
+                { "schema_item" : "maxConcurrent", "schema_value" : "maxConcurrent", "type" : "input", "label" : "maxConcurrent", "description" : "Maximum scans to load onto the openVas server at any given time.", "required" : true, "jimi_syntax" : false }
+            ],
+            "data_out" : {
+                "result" : { 
+                    "description" : "Returns True when processing is complete.",
+                    "type" : "boolean",
+                    "always_present" : true,
+                    "values" : {
+                        "True" : { "description" : "Processing Complete." },
+                        "False" : { "description" : "openvasClient object not found." }
+                    }
+                },
+                "rc" : {
+                    "description" : "Returns the exit code for the action.",
+                    "type" : "number",
+                    "always_present" : true,
+                    "values" : {
+                        "0" : { "description" : "Processing Complete." },
+                        "404" : { "description" : "openvasClient object not found." }
+                    }
+                },
+                "msg" : {
+                    "description" : "A message that outlines additional information about the result.",
+                    "type" : "text",
+                    "always_present" : true,
+                    "values" : {
+                    }
+                }
+            }
+        }
+    },
+    "settings" : {
+
+    }
+}
