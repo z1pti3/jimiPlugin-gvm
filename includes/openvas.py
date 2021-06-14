@@ -16,7 +16,7 @@ class openvas():
             return None
 
     def connect(self,host,username,openvasUsername,openvasPassword,port,openvasRemotePort,password,keyFile,keyPassword):
-        self.sshTunnel = SSHTunnelForwarder((host,port),ssh_username=username,ssh_password=password,ssh_pkey=Path(keyFile),ssh_private_key_password=keyPassword,remote_bind_address=("127.0.0.1",openvasRemotePort))
+        self.sshTunnel = SSHTunnelForwarder((host,port),ssh_username=username,ssh_password=password,ssh_pkey=str(Path(keyFile)),ssh_private_key_password=keyPassword,remote_bind_address=("127.0.0.1",openvasRemotePort))
         self.sshTunnel.start()
         self.sshTunnelPort = self.sshTunnel.local_bind_port
 
