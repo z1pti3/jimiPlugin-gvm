@@ -1,7 +1,7 @@
 {
     "name" : "gvm",
     "author" : " 0xSecEng & z1p",
-    "version" : 1.0,
+    "version" : 1.1,
     "categories" : ["vulnerability management"],
     "description" : "GVM plugins enables jimi to contact openVas vulnerability management server over a TCP socket via SSH. jimi is able to configure, run and return vulnerability reports from openVas.",
     "icon" : null,
@@ -52,7 +52,7 @@
                 { "schema_item" : "host", "schema_value" : "host", "type" : "input", "label" : "host", "description" : "IP or Hostname of the SSH server used to communicate with the openVas manager.", "required" : true, "jimi_syntax" : true },
                 { "schema_item" : "port", "schema_value" : "port", "type" : "input", "label" : "port", "description" : "SSH port.", "required" : true, "jimi_syntax" : false },
                 { "schema_item" : "username", "schema_value" : "username", "type" : "input", "label" : "username", "description" : "SSH username.", "required" : true, "jimi_syntax" : true },
-                { "schema_item" : "password", "schema_value" : "password", "type" : "input", "label" : "password", "description" : "SSH password or SSH private key password when a keyFile is defined.", "required" : true, "jimi_syntax" : false },
+                { "schema_item" : "password", "schema_value" : "password", "type" : "input", "label" : "password", "description" : "SSH password or SSH private key password when a keyFile is defined.", "required" : false, "jimi_syntax" : false },
                 { "schema_item" : "keyFile", "schema_value" : "keyFile", "type" : "input", "label" : "keyFile", "description" : "Path to the SSH private key to be used to connect.", "required" : false, "jimi_syntax" : true },
                 { "schema_item" : "openvasUsername", "schema_value" : "openvasUsername", "type" : "input", "label" : "openvasUsername", "description" : "openVas username.", "required" : true, "jimi_syntax" : true },
                 { "schema_item" : "openvasPassword", "schema_value" : "openvasPassword", "type" : "input", "label" : "openvasPassword", "description" : "openVas password.", "required" : true, "jimi_syntax" : false },

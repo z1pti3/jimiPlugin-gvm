@@ -1,7 +1,7 @@
 import jimi
 
 class _gvm(jimi.plugin._plugin):
-    version = 1.0
+    version = 1.1
 
     def install(self):
         jimi.model.registerModel("gvmConnect","_gvmConnect","_action","plugins.gvm.models.action")
