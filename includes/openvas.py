@@ -41,7 +41,7 @@ class openvas():
             self.sshTunnel = None
 
     def __del__(self):
-        self.disconnect
+        self.disconnect()
 
     def getScanCount(self):
         totalScans = 0
