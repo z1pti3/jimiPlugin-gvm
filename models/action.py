@@ -110,6 +110,8 @@ class _gvmProcessScans(jimi.action._action):
 		try:
 			openvasClient = data["eventData"]["gvm"]
 			canStart = self.maxConcurrent - openvasClient.getScanCount()
+			if scanStart < 1:
+				jimi.logging.debug("GVM sanner has not slots to start a scan.scannerId={0}".format(scannerId),-1)
 			scans = gvmScan._gvmScan().getAsClass(query={ "scannerId" : scannerId, "status" : { "$ne" : 100 }, "endTime" : -1 })
 			for scan in scans:
 				# New scan
@@ -131,7 +133,7 @@ class _gvmProcessScans(jimi.action._action):
 					else:
 						jimi.logging.debug("GVM Target could not be created. target={0}, scannerId={1}".format("Jimi-{0}".format(scan._id),scannerId),-1)
 				# Update Scan
-				else:
+				elif scan.status > -1:
 					gvmScanResult = openvasClient.getScan(scan.scanId)
 					if gvmScanResult["@status"] == "200":
 						if gvmScanResult["task"]["status"] == "Done":
