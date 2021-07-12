@@ -131,6 +131,11 @@ class _gvmProcessScans(jimi.action._action):
 					else:
 						jimi.logging.debug("GVM Target could not be created. target={0}, scannerId={1}".format("Jimi-{0}".format(scan._id),scannerId),-1)
 				# Update Scan
+				elif not scan.scanId:
+					scan.status = -255
+					scan.lastCheck = int(time.time())
+					scan.endTime = int(time.time())
+					scan.update(["status","lastCheck","endTime"])
 				else:
 					gvmScanResult = openvasClient.getScan(scan.scanId)
 					if gvmScanResult["@status"] == "200":
