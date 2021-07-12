@@ -34,7 +34,7 @@ class openvas():
 
     def disconnect(self):
         if self.gmpObj != None:
-            self.gmpObj.__exit__()
+            self.gmpObj.__exit__(0,0,"disconnected")
             self.gmpObj = None
         if self.sshTunnel != None:
             self.sshTunnel.stop()
